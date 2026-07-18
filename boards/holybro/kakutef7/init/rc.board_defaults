@@ -20,5 +20,9 @@ param set-default EKF2_IMU_CTRL 7
 # the startup tune is not great on a binary output buzzer, so disable it
 param set-default CBRK_BUZZER 782090
 
+# setup the uXRCE link
+param set-default UXRCE_DDS_CFG 101
+param set-default SER_TEL1_BAUD 921600
+param set-default MAV_0_CONFIG 0
 
 set LOGGER_BUF 30
