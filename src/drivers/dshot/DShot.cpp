@@ -260,6 +260,7 @@ void DShot::publish_esc_status(void)
 {
 	esc_status_s &esc_status = esc_status_pub.get();
 	int telemetry_index = 0;
+	(void)telemetry_index;
 
 	// clear data of the esc that are offline
 	for (int index = 0; (index < _last_telemetry_index); index++) {
