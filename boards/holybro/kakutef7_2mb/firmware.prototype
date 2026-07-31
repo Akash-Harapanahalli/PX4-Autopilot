@@ -1,0 +1,13 @@
+{
+    "board_id": 119,
+    "magic": "KAKUTEF72MB",
+    "description": "Firmware for the Holybro Kakute F7 2MB board",
+    "image": "",
+    "build_time": 0,
+    "summary": "KAKUTEF72MB",
+    "version": "0.1",
+    "image_size": 0,
+    "image_maxsize": 2080768,
+    "git_identity": "",
+    "board_revision": 0
+}
