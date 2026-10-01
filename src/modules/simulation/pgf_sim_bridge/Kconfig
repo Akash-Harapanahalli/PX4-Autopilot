@@ -1,0 +1,5 @@
+menuconfig MODULES_SIMULATION_PGF_SIM_BRIDGE
+	bool "pgf_sim_bridge"
+	default n
+	---help---
+		Simulation-only UDP stand-in for the PGF companion computer

@@ -41,3 +41,8 @@ if param compare -s MC_NN_EN 1
 then
 	mc_nn_control start
 fi
+
+if param compare -s PGF_EN 1
+then
+	mc_pgf_control start
+fi

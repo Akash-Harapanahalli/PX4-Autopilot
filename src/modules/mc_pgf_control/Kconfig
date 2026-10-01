@@ -1,0 +1,12 @@
+menuconfig MODULES_MC_PGF_CONTROL
+	bool "mc_pgf_control"
+	default n
+	---help---
+		Enable support for mc_pgf_control
+
+menuconfig USER_MC_PGF_CONTROL
+	bool "mc_pgf_control running as userspace module"
+	default y
+	depends on BOARD_PROTECTED && MODULES_MC_PGF_CONTROL
+	---help---
+		Put mc_pgf_control in userspace memory

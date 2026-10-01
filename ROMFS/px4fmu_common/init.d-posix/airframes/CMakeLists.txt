@@ -71,6 +71,7 @@ px4_add_romfs_files(
 	3011_jsbsim_hexarotor_x
 
 	4001_gz_x500
+	4099_gz_x500_pgf
 	4002_gz_x500_depth
 	4003_gz_rc_cessna
 	4004_gz_standard_vtol
@@ -102,6 +103,8 @@ px4_add_romfs_files(
 	10030_gazebo-classic_px4vision
 
 	10040_sihsim_quadx
+	10098_sihsim_quadx_pgf_dds
+	10099_sihsim_quadx_pgf
 	10041_sihsim_airplane
 	10042_sihsim_xvert
 	10043_sihsim_standard_vtol

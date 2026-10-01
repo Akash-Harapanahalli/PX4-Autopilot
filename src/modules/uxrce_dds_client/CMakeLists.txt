@@ -62,6 +62,15 @@ else()
 		set(lib_dir "lib")
 	endif()
 
+	# SITL talks to the agent over UDP, so the UDP profile has to be present
+	# there. On NuttX this board only ever uses the serial link, and dropping
+	# UDP saves the flash that the 1MB kakutef7 needed.
+	if(${PX4_PLATFORM} STREQUAL "posix")
+		set(microxrceddsclient_profile_udp ON)
+	else()
+		set(microxrceddsclient_profile_udp OFF)
+	endif()
+
 	include(ExternalProject)
 
 	ExternalProject_Add(
@@ -78,7 +87,7 @@ else()
 			-DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
 			-DUCLIENT_PIC:BOOL=OFF
 			-DUCLIENT_PROFILE_TCP:BOOL=OFF
-			-DUCLIENT_PROFILE_UDP:BOOL=OFF
+			-DUCLIENT_PROFILE_UDP:BOOL=${microxrceddsclient_profile_udp}
 			-DUCLIENT_PROFILE_SERIAL:BOOL=ON
 			-DUCLIENT_PROFILE_DISCOVERY:BOOL=OFF
 			-DUCLIENT_PROFILE_CUSTOM_TRANSPORT:BOOL=OFF

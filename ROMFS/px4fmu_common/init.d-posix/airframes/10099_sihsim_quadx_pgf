@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# @name QuadrotorX SIH with PGF, driven over UDP by a local companion
+#
+# @type Quadrotor
+#
+# Same vehicle and PGF parameters as 10098, but the value expansion arrives from
+# scripts/sitl_pgf_companion.py over plain UDP instead of uXRCE-DDS, and
+# pgf_sim_bridge supplies the offboard heartbeat. Use this when ROS 2 is not
+# available; use 10098 to exercise the real DDS path.
+#
+
+. ${R}etc/init.d-posix/airframes/10098_sihsim_quadx_pgf_dds
+
+param set-default PGF_SIM_ENGAGE 1
+param set-default PGF_SIM_TOUT 200.0
+
+pgf_sim_bridge start

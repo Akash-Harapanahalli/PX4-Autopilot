@@ -1,0 +1,65 @@
+#!/bin/sh
+#
+# @name QuadrotorX SIH with PGF, driven over uXRCE-DDS
+#
+# @type Quadrotor
+#
+# Same vehicle as 10040_sihsim_quadx, plus the PGF_* parameters. Every physical
+# value below is SIH's own, so the MPC on the companion side and the flow onboard
+# both use exactly the vehicle being simulated
+# (see simulator_sih/sih.cpp::generate_force_and_torques):
+#
+#   thrust  T_B = -T_MAX * sum(u)                     -> PGF_UMAX  = SIH_T_MAX
+#   roll    L_ROLL  * T_MAX * (-u0 +u1 +u2 -u3)       -> rotor y = (+L, -L, -L, +L)
+#   pitch   L_PITCH * T_MAX * (+u0 -u1 +u2 -u3)       -> rotor x = (+L, -L, +L, -L)
+#   yaw     Q_MAX * (+u0 +u1 -u2 -u3)                 -> spin (+1,+1,-1,-1),
+#                                                        PGF_KM = Q_MAX / T_MAX
+#
+# SIH's rotors are linear in the command, T = T_MAX * eta, so the thrust curve is
+# PGF_THR_A = 0, PGF_THR_B = T_MAX. THR_MDL_FAC must be 0 or the mixer would
+# apply a second curve underneath.
+#
+
+. ${R}etc/init.d-posix/airframes/10040_sihsim_quadx
+
+param set-default THR_MDL_FAC 0
+
+param set-default PGF_EN 1
+param set-default PGF_FLOW_EN 1
+
+param set-default PGF_MASS 1.0
+param set-default PGF_IXX 0.025
+param set-default PGF_IYY 0.025
+param set-default PGF_IZZ 0.030
+param set-default PGF_KM 0.02
+
+param set-default PGF_M0_X 0.2
+param set-default PGF_M0_Y 0.2
+param set-default PGF_M0_S 1.0
+param set-default PGF_M1_X -0.2
+param set-default PGF_M1_Y -0.2
+param set-default PGF_M1_S 1.0
+param set-default PGF_M2_X 0.2
+param set-default PGF_M2_Y -0.2
+param set-default PGF_M2_S -1.0
+param set-default PGF_M3_X -0.2
+param set-default PGF_M3_Y 0.2
+param set-default PGF_M3_S -1.0
+
+param set-default PGF_THR_A 0.0
+param set-default PGF_THR_B 5.0
+param set-default PGF_THR_C 0.0
+param set-default PGF_UMAX 5.0
+
+param set-default PGF_R 0.5
+param set-default PGF_ALPHA_C 20.0
+param set-default PGF_WPROX 0.0
+param set-default PGF_TOUT 300.0
+
+# Leave the offboard-loss failsafe short: the companion's heartbeat is the kill
+# switch, exactly as on the vehicle.
+param set-default COM_OF_LOSS_T 0.5
+
+# No pgf_sim_bridge here: the value expansion arrives over uXRCE-DDS from the
+# real mpc_node, and quad_px4_offboard supplies the heartbeat, exactly as on
+# the vehicle.

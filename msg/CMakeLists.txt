@@ -159,6 +159,9 @@ set(msg_files
 	ParameterSetValueRequest.msg
 	ParameterSetValueResponse.msg
 	ParameterUpdate.msg
+	PgfStatus.msg
+	PgfValueExpansion.msg
+	PgfValueHessian.msg
 	Ping.msg
 	PositionControllerLandingStatus.msg
 	PositionControllerStatus.msg

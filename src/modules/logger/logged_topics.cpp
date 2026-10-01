@@ -216,6 +216,11 @@ void LoggedTopics::add_default_topics()
 	add_topic_multi("vehicle_thrust_setpoint", 20, 2);
 	add_topic_multi("vehicle_torque_setpoint", 20, 2);
 
+	// Pontryagin gradient flow controller
+	add_optional_topic("pgf_status", 10);
+	add_optional_topic("pgf_value_expansion");
+	add_optional_topic("pgf_value_hessian", 100);
+
 	// SYS_HITL: default ground truth logging for simulation
 	int32_t sys_hitl = 0;
 	param_get(param_find("SYS_HITL"), &sys_hitl);

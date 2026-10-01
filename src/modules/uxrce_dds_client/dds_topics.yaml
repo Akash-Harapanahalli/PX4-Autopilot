@@ -226,5 +226,11 @@ subscriptions:
   - topic: /fmu/in/landing_gear
     type: px4_msgs::msg::LandingGear
 
+  - topic: /fmu/in/pgf_value_expansion
+    type: px4_msgs::msg::PgfValueExpansion
+
+  - topic: /fmu/in/pgf_value_hessian
+    type: px4_msgs::msg::PgfValueHessian
+
 # Create uORB::PublicationMulti
 subscriptions_multi:

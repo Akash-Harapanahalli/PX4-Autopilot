@@ -1,0 +1,81 @@
+#!/bin/sh
+#
+# @name Gazebo x500 with the Pontryagin gradient flow controller
+#
+# @type Quadrotor
+#
+# Same vehicle as 4001_gz_x500, plus the PGF_* parameters. Every value is
+# derived from the Gazebo model so the companion MPC and the onboard flow use
+# exactly the vehicle being simulated (Tools/simulation/gz/models/x500_base):
+#
+#   mass     2.0 kg body + 4 x 0.016077 kg rotors      = 2.0643 kg
+#   inertia  body diag(0.021667, 0.021667, 0.04) plus the rotors by parallel axis
+#   thrust   the gz motor plugin gives T = motorConstant * w^2 with
+#            motorConstant = 8.54858e-06, and SIM_GZ_EC_MIN/MAX map the
+#            normalized command onto w in [150, 1000] rad/s, so
+#              T(eta) = kf*(150 + 850*eta)^2
+#                     = 6.176349*eta^2 + 2.179888*eta + 0.192343   [N]
+#            -- a genuine quadratic, unlike SIH's linear rotors.
+#   yaw      momentConstant 0.016 = torque per Newton of rotor thrust;
+#            the spin signs follow CA_ROTORn_KM (+,+,-,-)
+#
+# THR_MDL_FAC must be 0 so the mixer does not apply a second curve underneath.
+#
+
+. ${R}etc/init.d-posix/airframes/4001_gz_x500
+
+param set-default THR_MDL_FAC 0
+
+param set-default PGF_EN 1
+param set-default PGF_FLOW_EN 1
+
+param set-default PGF_MASS 2.0643
+param set-default PGF_IXX 0.024509
+param set-default PGF_IYY 0.022753
+param set-default PGF_IZZ 0.043929
+param set-default PGF_KM 0.016
+
+param set-default PGF_M0_X 0.13
+param set-default PGF_M0_Y 0.22
+param set-default PGF_M0_S 1.0
+param set-default PGF_M1_X -0.13
+param set-default PGF_M1_Y -0.20
+param set-default PGF_M1_S 1.0
+param set-default PGF_M2_X 0.13
+param set-default PGF_M2_Y -0.22
+param set-default PGF_M2_S -1.0
+param set-default PGF_M3_X -0.13
+param set-default PGF_M3_Y 0.20
+param set-default PGF_M3_S -1.0
+
+param set-default PGF_THR_A 6.176349
+param set-default PGF_THR_B 2.179888
+param set-default PGF_THR_C 0.192343
+param set-default PGF_UMAX 8.5486
+
+param set-default PGF_R 0.5
+param set-default PGF_ALPHA_C 20.0
+param set-default PGF_WPROX 0.0
+param set-default PGF_TOUT 300.0
+
+# The companion's heartbeat is the kill switch, exactly as on the vehicle.
+param set-default COM_OF_LOSS_T 0.5
+
+
+# 4001_gz_x500 sets NAV_DLL_ACT 2, which makes a GCS datalink an arming
+# requirement. There is no GCS in this headless setup and the companion computer
+# is the command path, so disable the datalink-loss action.
+param set-default NAV_DLL_ACT 0
+
+# There is no ESC telemetry in this simulation, and with direct-actuator offboard
+# the control allocator is idle, so the ESC health check reports a failure and
+# blocks arming.
+param set-default COM_ARM_CHK_ESCS 0
+
+# HAZARD, and not simulation-only: with direct-actuator offboard the control
+# allocator is idle, so nothing publishes vehicle_thrust_setpoint. The multicopter
+# land detector reads that as "low thrust", and a steady hover supplies the low
+# velocity and no-rotation conditions, so it declares a landing in mid-air --
+# observed here disarming the vehicle at 3 m. Disable auto-disarm for the test.
+# On the real vehicle this needs a proper answer before flying PGF.
+param set-default COM_DISARM_LAND 0
